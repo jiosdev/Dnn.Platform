@@ -8,7 +8,9 @@
     <fieldset>
 		<asp:Panel runat="server" ID="CannotChangePasswordMessage" CssClass="dnnFormMessage dnnFormWarning" Visible="False"><%=LocalizeString("CannotChangePassword") %></asp:Panel>
 		<asp:panel id="pnlChange" runat="server">
-		    <h2 class="dnnFormSectionHead"><asp:label id="lblChangePasswordHeading" runat="server" resourceKey="ChangePassword" /></h2>
+		   <%-- <h2 class="dnnFormSectionHead">
+		        <asp:label id="lblChangePasswordHeading" runat="server" resourceKey="ChangePassword" />
+		    </h2>--%>
             <div class="dnnFormItem"><p><asp:label id="lblChangeHelp" runat="server" ViewStateMode="Disabled" /></p></div>
             <div id="oldPasswordRow" runat="server" class="dnnFormItem">
                 <dnn:label id="plOldPassword" runat="server" controlname="txtOldPassword" />
@@ -29,7 +31,7 @@
                 <dnn:captchacontrol id="ctlCaptcha" captchawidth="130" captchaheight="40" ErrorStyle-CssClass="dnnFormMessage dnnFormError dnnCaptcha" runat="server" />
             </div>
             <div class="dnnClear"></div>
-            <ul class="dnnActions dnnClear">
+            <ul class="dnnActions dnnClear" id="ulpasswordactions">
                  <li><asp:LinkButton id="cmdUpdate" runat="server" CssClass="dnnPrimaryAction" resourcekey="ChangePassword" /></li>
             </ul>       
 		</asp:panel>

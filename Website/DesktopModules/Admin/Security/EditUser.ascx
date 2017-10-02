@@ -97,6 +97,7 @@
 
         $(document).ready(function () {
             setUpDnnEditUser();
+            $("#ulpasswordactions").removeClass();
             var pageNo = <%=PageNo %>;
             if(pageNo > 0) {
                 $('#dnnEditUser > ul > li:nth-child(' + pageNo + ')').find('a').click();
