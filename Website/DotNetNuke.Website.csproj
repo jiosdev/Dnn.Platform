@@ -99,6 +99,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DNN Platform\DotNetNuke.WebUtility\bin\DotNetNuke.WebUtility.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\Library\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="ManageAccount">
       <HintPath>..\Library\ManageAccount.dll</HintPath>
     </Reference>
@@ -125,6 +128,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
@@ -168,8 +172,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Packages\WebFormsMVP.1.4.1.0\lib\WebFormsMvp.dll</HintPath>
     </Reference>
+    <Reference Include="YA.Business">
+      <HintPath>..\Library\YA.Business.dll</HintPath>
+    </Reference>
+    <Reference Include="YA.CMSAdapter">
+      <HintPath>..\Library\YA.CMSAdapter.dll</HintPath>
+    </Reference>
     <Reference Include="YA.Controls">
       <HintPath>..\Library\YA.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="YA.Domain">
+      <HintPath>..\Library\YA.Domain.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
