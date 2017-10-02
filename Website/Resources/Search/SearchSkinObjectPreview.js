@@ -129,7 +129,7 @@
                         $('a.dnnSearchBoxClearText', $wrap).removeClass('dnnShow');
                         $('.searchSkinObjectPreview', $wrap).remove();
                     } else {
-                        $('a.dnnSearchBoxClearText', $wrap).addClass('dnnShow');
+                        //$('a.dnnSearchBoxClearText', $wrap).addClass('dnnShow');
 
                         if (self.settings.searchType != 'S' ||
                             val.length < self.settings.minCharRequiredTriggerAutoSearch) return;
@@ -147,8 +147,10 @@
                                     url: url,
                                     beforeSend: service ? service.setModuleHeaders : null,
                                     success: function(result) {
-                                        if (result)
+                                        if (result) {
                                             generatePreviewTemplate(result, container);
+                                            $('.dnnSearchBoxClearText').addClass('dnnShow');
+                                        }
                                     },
                                     error: function() {
                                     },

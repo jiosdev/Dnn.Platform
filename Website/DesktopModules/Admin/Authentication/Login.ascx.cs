@@ -24,6 +24,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Data.Entity;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -53,6 +54,10 @@ using DotNetNuke.Services.Messaging.Data;
 using DotNetNuke.UI.Skins.Controls;
 using DotNetNuke.UI.UserControls;
 using DotNetNuke.UI.WebControls;
+using YA.Business;
+using YA.Business.Newsletter;
+using YA.CMSAdapter.Domain;
+using YA.Controls.Login;
 
 #endregion
 
@@ -736,7 +741,9 @@ namespace DotNetNuke.Modules.Admin.Authentication
 			bool bUpdateUser = false;
 			if (ProfileProperties.Count > 0)
 			{
-				foreach (string key in ProfileProperties)
+			    YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(User);
+			    var user = new YA.Domain.User(yaUserInfo);
+                foreach (string key in ProfileProperties)
 				{
 					switch (key)
 					{
@@ -778,7 +785,10 @@ namespace DotNetNuke.Modules.Admin.Authentication
 					if (bUpdateUser)
 					{
 						UserController.UpdateUser(PortalId, objUser);
-					}
+					    yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(objUser);
+					    UserManager.LogChangesForUserWithOutSavingUser(objUser.UserID, user, yaUserInfo, EntityState.Modified);
+					    NewsletterManager.UpdateSubscriberInfo(user);
+                    }
 					ProfileController.UpdateUserProfile(objUser);
 				}
 			}
@@ -844,7 +854,7 @@ namespace DotNetNuke.Modules.Admin.Authentication
                     UserController.UserLogin(PortalId, objUser, PortalSettings.PortalName, AuthenticationLoginBase.GetIPAddress(), RememberMe);
 
 					//redirect browser
-			        var redirectUrl = RedirectURL;
+			        //var redirectUrl = RedirectURL;
 
                     //Clear the cookie
                     HttpContext.Current.Response.Cookies.Set(new HttpCookie("returnurl", "")
@@ -853,8 +863,10 @@ namespace DotNetNuke.Modules.Admin.Authentication
                         Path = (!string.IsNullOrEmpty(Globals.ApplicationPath) ? Globals.ApplicationPath : "/")
                     });
 
-                    Response.Redirect(redirectUrl, true);
-					break;
+                    //Response.Redirect(redirectUrl, true);
+				    YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(objUser);
+				    YALoginController.RedirectAfterLogin(yaUserInfo);
+                    break;
 				case UserValidStatus.PASSWORDEXPIRED:
 					strMessage = string.Format(Localization.GetString("PasswordExpired", LocalResourceFile), expiryDate.ToLongDateString());
 					AddLocalizedModuleMessage(strMessage, ModuleMessage.ModuleMessageType.YellowWarning, true);
@@ -1289,4 +1301,27 @@ namespace DotNetNuke.Modules.Admin.Authentication
 		#endregion
 
 	}
+
+    public partial class Login
+    {
+        #region Private Members
+
+        private YALoginController _yaLoginController;
+
+        private YALoginController YALoginController => _yaLoginController ??
+                                                       (_yaLoginController = new YALoginController());
+
+        private CmsManager _cmsManager;
+
+        private CmsManager CmsManager => _cmsManager ?? (_cmsManager = new CmsManager());
+        private UserManager _userManager;
+
+        private UserManager UserManager => _userManager ?? (_userManager = new UserManager());
+        private NewsletterManager _newsletterManager;
+
+        private NewsletterManager NewsletterManager => _newsletterManager ??
+                                                       (_newsletterManager = new NewsletterManager());
+
+        #endregion
+    }
 }
