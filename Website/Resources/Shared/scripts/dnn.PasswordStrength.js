@@ -318,5 +318,6 @@
 
 
 dnn.initializePasswordStrength = function (selector, options) {
+    $(selector).passwordStrength(options);
     $(document).ready(function() { $(selector).passwordStrength(options); });
 };

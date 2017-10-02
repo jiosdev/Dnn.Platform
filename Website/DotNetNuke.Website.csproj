@@ -113,6 +113,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DNN Platform\Components\PetaPoco\bin\PetaPoco.dll</HintPath>
     </Reference>
+    <Reference Include="RefreshModule">
+      <HintPath>..\Library\RefreshModule.dll</HintPath>
+    </Reference>
     <Reference Include="SharpZipLib">
       <HintPath>..\DNN Platform\Components\SharpZipLib\bin\SharpZipLib.dll</HintPath>
     </Reference>

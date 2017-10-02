@@ -53,6 +53,7 @@ using DotNetNuke.UI.Utilities;
 using DotNetNuke.Web.Client.ClientResourceManagement;
 
 using Globals = DotNetNuke.Common.Globals;
+using RefreshModule;
 
 #endregion
 
@@ -790,4 +791,50 @@ namespace DotNetNuke.Framework
         #endregion
 
     }
+
+    [Refresh()]
+    public partial class DefaultPage
+    {
+        protected override void OnInitComplete(EventArgs e)
+        {
+            base.OnInitComplete(e);
+            // Change Page Title
+            string pageTitle = Title;
+            if (pageTitle.StartsWith("Yoga"))
+            {
+                pageTitle = pageTitle.Replace("Yoga Alliance |", string.Empty).Replace("Yoga Alliance >", string.Empty);
+                Title = pageTitle + " | Yoga Alliance";
+
+            }
+            else
+            {
+                Title = pageTitle + " | Yoga Alliance";
+
+            }
+
+            // Refresh module
+            if (RefreshHelper.IsPageRefreshed && IsPostBack)
+            {
+                Response.Redirect(Request.RawUrl);
+            }
+
+            // Catch "Validation of viewstate MAC failed" exceptions and redirect the user 
+            // to the current page (i.e. force a redirect on the client)
+            //http://blog.janjonas.net/2013-04-18/dotnetnuke-workaround-validation-viewstate-failed-exception-dnn_7-login-form/comment-page-1#comment-38855
+            Page.Error += (sender, args) =>
+            {
+                //if (!(HttpContext.Current.Error is HttpException)) return;
+                if (!(HttpContext.Current.Error.InnerException is ViewStateException)) return;
+
+                HttpContext.Current.Response.Clear();
+                Response.Redirect(Request.UrlReferrer == null
+                    ? Request.Url.ToString()
+                    : Request.UrlReferrer.ToString());
+            };
+
+            //if (!EntityFrameworkProfilerBootstrapper.IsStarted)
+            //EntityFrameworkProfilerBootstrapper.PreStart();
+        }
+    }
 }
+

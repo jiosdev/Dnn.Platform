@@ -54,7 +54,7 @@
                 <td width="30"></td>
                 <td valign="top" width="" nowrap="nowrap">
                     <asp:LinkButton ID="cmdAdd" CssClass="dnnPrimaryAction" runat="server"  CausesValidation="true" ValidationGroup="SecurityRole" />
-                    <asp:CheckBox ID="chkNotify" resourcekey="SendNotification" runat="server" Checked="True" />
+                    <asp:CheckBox ID="chkNotify" resourcekey="SendNotification" runat="server" Checked="False" />
                 </td>
             </tr>
         </table>

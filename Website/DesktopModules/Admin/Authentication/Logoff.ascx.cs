@@ -60,7 +60,8 @@ namespace DotNetNuke.Modules.Admin.Authentication
 				{
 					DataCache.ClearUserCache(PortalSettings.PortalId, Context.User.Identity.Name);
 				}
-				var objPortalSecurity = new PortalSecurity();
+			    Session.Abandon();
+                var objPortalSecurity = new PortalSecurity();
 				objPortalSecurity.SignOut();
 			}
 			catch (Exception exc)	//Page failed to load

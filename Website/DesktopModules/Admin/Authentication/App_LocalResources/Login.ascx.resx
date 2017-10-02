@@ -178,7 +178,7 @@
     <value>Your password will expire on {0}.  Please update your password before continuing.</value>
   </data>
   <data name="PasswordInvalid.Text" xml:space="preserve">
-    <value>You must enter a valid password.  Please contact the Site Administrator if you do not know the password requirements.</value>
+    <value>You must enter a valid password. Passwords must be at least seven characters and contain at least one special character. Special characters include !, , @, #, $, , ^, x%x, *, (, and ). In addition, a space in your password also counts as a special character.</value>
   </data>
   <data name="PasswordMismatch.Text" xml:space="preserve">
     <value>Password values entered do not match.</value>
@@ -214,7 +214,7 @@
     <value>Register a new Account</value>
   </data>
   <data name="Remember.Text" xml:space="preserve">
-    <value>Remember Login</value>
+    <value>Remember Log In</value>
   </data>
   <data name="UserLockedOut.Text" xml:space="preserve">
     <value>This account has been locked out after too many unsuccessful login attempts.  Please wait {0} minutes before trying to login again. If you have forgotten your password, please try the Password Reminder option before contacting the Site Administrator.</value>
