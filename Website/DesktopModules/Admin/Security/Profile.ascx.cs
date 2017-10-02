@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using DotNetNuke.Common.Lists;
 using DotNetNuke.Common.Utilities;
@@ -31,6 +32,9 @@ using DotNetNuke.Entities.Users;
 using DotNetNuke.Framework;
 using DotNetNuke.UI.WebControls;
 using DotNetNuke.UI.Skins.Controls;
+using YA.Business;
+using YA.Business.Newsletter;
+using YA.CMSAdapter.Domain;
 using MembershipProvider = DotNetNuke.Security.Membership.MembershipProvider;
 
 #endregion
@@ -142,7 +146,8 @@ namespace DesktopModules.Admin.Security
         /// -----------------------------------------------------------------------------
         public override void DataBind()
         {
-		
+            YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(User);
+            YaUser = new YA.Domain.User(yaUserInfo);
             //Before we bind the Profile to the editor we need to "update" the visible data
             var properties = new ProfilePropertyDefinitionCollection();
 			var imageType = new ListController().GetListEntryInfo("DataType", "Image");
@@ -243,6 +248,9 @@ namespace DesktopModules.Admin.Security
 
                 //Update User's profile
                 User = ProfileController.UpdateUserProfile(User, properties);
+                YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(User);
+                Usermanager.LogChangesForUserWithOutSavingUser(UserInfo.UserID, YaUser, yaUserInfo, EntityState.Modified);
+                NewsletterManager.UpdateSubscriberInfo(YaUser);
 
                 OnProfileUpdated(EventArgs.Empty);
                 OnProfileUpdateCompleted(EventArgs.Empty);
@@ -256,6 +264,27 @@ namespace DesktopModules.Admin.Security
                 User.UpdateDisplayName(PortalSettings.Registration.DisplayNameFormat);
             }
         }
+
+        #endregion
+    }
+
+    public partial class DNNProfile
+    {
+        #region private properties
+
+        private UserManager _userManager;
+
+        private UserManager Usermanager => _userManager ?? (_userManager = new UserManager());
+
+        private NewsletterManager _newsletterManager;
+
+        private NewsletterManager NewsletterManager => _newsletterManager ??
+                                                       (_newsletterManager = new NewsletterManager());
+
+        private YA.Domain.User YaUser { get; set; }
+        private CmsManager _cmsManager;
+
+        private CmsManager CmsManager => _cmsManager ?? (_cmsManager = new CmsManager());
 
         #endregion
     }
