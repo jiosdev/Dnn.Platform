@@ -65,10 +65,10 @@
             <dnn:label id="plLastChanged" runat="server" controlname="lblLastChanged" />
             <asp:label id = "lblLastChanged" runat="server" ViewStateMode="Disabled" />
         </div>
-        <div class="dnnFormItem">
+     <%--   <div class="dnnFormItem">
             <dnn:label id="plExpires" runat="server" controlname="lblExpires" />
             <asp:label id = "lblExpires" runat="server" ViewStateMode="Disabled"/>
-        </div>
+        </div>--%>
     </fieldset>
     <ul class="dnnActions dnnClear">
         <li><asp:LinkButton id="cmdReset" runat="server" CssClass="dnnPrimaryAction" resourcekey="ResetPassword" ViewStateMode="Disabled" /></li>

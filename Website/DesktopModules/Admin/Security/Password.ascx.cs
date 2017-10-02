@@ -150,6 +150,7 @@ namespace DotNetNuke.Modules.Admin.Users
             lblLastChanged.Text = User.Membership.LastPasswordChangeDate.ToLongDateString();
 
             //Set Password Expiry Label
+            /*
             if (User.Membership.UpdatePassword)
             {
                 lblExpires.Text = Localization.GetString("ForcedExpiry", LocalResourceFile);
@@ -158,7 +159,7 @@ namespace DotNetNuke.Modules.Admin.Users
             {
                 lblExpires.Text = PasswordConfig.PasswordExpiry > 0 ? User.Membership.LastPasswordChangeDate.AddDays(PasswordConfig.PasswordExpiry).ToLongDateString() : Localization.GetString("NoExpiry", LocalResourceFile);
             }
-			
+			*/
            if (((!MembershipProviderConfig.PasswordRetrievalEnabled) && IsAdmin && (!IsUser)))
             {
                 pnlChange.Visible = true;

@@ -512,6 +512,7 @@ namespace DotNetNuke.UI.Skins.Controls
         private void CmdSearchClick(object sender, EventArgs e)
         {
             SearchType = "S";
+           /* 
             if (WebRadioButton.Visible)
             {
                 if (WebRadioButton.Checked)
@@ -519,6 +520,7 @@ namespace DotNetNuke.UI.Skins.Controls
                     SearchType = "W";
                 }
             }
+            */
             ExecuteSearch(txtSearch.Text.Trim(), SearchType);
         }
 

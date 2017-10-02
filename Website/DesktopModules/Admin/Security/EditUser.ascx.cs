@@ -33,7 +33,7 @@ using DotNetNuke.Entities.Urls;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Framework.JavaScriptLibraries;
 using DotNetNuke.Instrumentation;
-using DotNetNuke.Modules.Admin.Security;
+//using DotNetNuke.Modules.Admin.Security;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Membership;
 using DotNetNuke.Services.Exceptions;
@@ -205,45 +205,45 @@ namespace DotNetNuke.Modules.Admin.Users
                         PageNo = 0;
                     }
                 }
-                userForm.DataSource = User;
+               // userForm.DataSource = User;
 
 
                 // hide username field in UseEmailAsUserName mode
-                bool disableUsername = PortalController.GetPortalSettingAsBoolean("Registration_UseEmailAsUserName", PortalId, false);
-                if (disableUsername)
-                {
-                    userForm.Items[0].Visible = false;
-                }
+                //bool disableUsername = PortalController.GetPortalSettingAsBoolean("Registration_UseEmailAsUserName", PortalId, false);
+                //if (disableUsername)
+                //{
+                //    userForm.Items[0].Visible = false;
+                //}
 
-                if (!Page.IsPostBack)
-                {
-                    userForm.DataBind();
-                }
+                //if (!Page.IsPostBack)
+                //{
+                //    userForm.DataBind();
+                //}
 
                 ctlPassword.User = User;
                 ctlPassword.DataBind();
 
-                if ((!DisplayServices))
-                {
-                    servicesTab.Visible = false;
-                }
-                else
-                {
-                    ctlServices.User = User;
-                    ctlServices.DataBind();
-                }
+                //if ((!DisplayServices))
+                //{
+                //    servicesTab.Visible = false;
+                //}
+                //else
+                //{
+                //    ctlServices.User = User;
+                //    ctlServices.DataBind();
+                //}
 
-                BindUser();
-                ctlProfile.User = User;
-                ctlProfile.DataBind();
+                //BindUser();
+                //ctlProfile.User = User;
+                //ctlProfile.DataBind();
 
-                dnnServicesDetails.Visible = DisplayServices;
-
+                //dnnServicesDetails.Visible = DisplayServices;
+                /*
                 var urlSettings = new DotNetNuke.Entities.Urls.FriendlyUrlSettings(PortalSettings.PortalId);
                 var showVanityUrl = (Config.GetFriendlyUrlProvider() == "advanced") && !User.IsSuperUser;
                 if (showVanityUrl)
                 {
-                    VanityUrlRow.Visible = true;
+                    //VanityUrlRow.Visible = true;
                     if (String.IsNullOrEmpty(User.VanityUrl))
                     {
                         //Clean Display Name
@@ -252,21 +252,22 @@ namespace DotNetNuke.Modules.Admin.Users
                         var cleanUrl = FriendlyUrlController.CleanNameForUrl(User.DisplayName, options, out modified);
                         var uniqueUrl = FriendlyUrlController.ValidateUrl(cleanUrl, -1, PortalSettings, out modified).ToLowerInvariant();
 
-                        VanityUrlAlias.Text = String.Format("{0}/{1}/", PortalSettings.PortalAlias.HTTPAlias, urlSettings.VanityUrlPrefix);
-                        VanityUrlTextBox.Text = uniqueUrl;
+                        //VanityUrlAlias.Text = String.Format("{0}/{1}/", PortalSettings.PortalAlias.HTTPAlias, urlSettings.VanityUrlPrefix);
+                        //VanityUrlTextBox.Text = uniqueUrl;
                         ShowVanityUrl = true;
                     }
                     else
                     {
-                        VanityUrl.Text = String.Format("{0}/{1}/{2}", PortalSettings.PortalAlias.HTTPAlias, urlSettings.VanityUrlPrefix, User.VanityUrl);
+                        //VanityUrl.Text = String.Format("{0}/{1}/{2}", PortalSettings.PortalAlias.HTTPAlias, urlSettings.VanityUrlPrefix, User.VanityUrl);
                         ShowVanityUrl = false;
                     }
                 }
+                */
             }
             else
             {
                 AddModuleMessage("NoUser", ModuleMessage.ModuleMessageType.YellowWarning, true);
-                DisableForm();
+               // DisableForm();
             }
         }
 
@@ -275,7 +276,7 @@ namespace DotNetNuke.Modules.Admin.Users
             if (IsHostMenu && !UserInfo.IsSuperUser)
             {
                 AddModuleMessage("NoUser", ModuleMessage.ModuleMessageType.YellowWarning, true);
-                DisableForm();
+                //DisableForm();
                 return false;
             }
 
@@ -283,7 +284,7 @@ namespace DotNetNuke.Modules.Admin.Users
             if (User.PortalID != Null.NullInteger && User.PortalID != PortalId)
             {
                 AddModuleMessage("InvalidUser", ModuleMessage.ModuleMessageType.YellowWarning, true);
-                DisableForm();
+              //  DisableForm();
                 return false;
             }
 
@@ -291,7 +292,7 @@ namespace DotNetNuke.Modules.Admin.Users
             if (User.IsSuperUser && !UserInfo.IsSuperUser)
             {
                 AddModuleMessage("NoUser", ModuleMessage.ModuleMessageType.YellowWarning, true);
-                DisableForm();
+              //  DisableForm();
                 return false;
             }
             if (IsEdit)
@@ -300,7 +301,7 @@ namespace DotNetNuke.Modules.Admin.Users
                 if (!IsAdmin || (User.IsInRole(PortalSettings.AdministratorRoleName) && !PortalSecurity.IsInRole(PortalSettings.AdministratorRoleName)))
                 {
                     AddModuleMessage("NotAuthorized", ModuleMessage.ModuleMessageType.YellowWarning, true);
-                    DisableForm();
+                    //DisableForm();
                     return false;
                 }
             }
@@ -321,7 +322,7 @@ namespace DotNetNuke.Modules.Admin.Users
                         if ((User.UserID > Null.NullInteger))
                         {
                             AddModuleMessage("NotAuthorized", ModuleMessage.ModuleMessageType.YellowWarning, true);
-                            DisableForm();
+                           // DisableForm();
                             return false;
                         }
                     }
@@ -330,36 +331,36 @@ namespace DotNetNuke.Modules.Admin.Users
             return true;
         }
 
-        private void BindMembership()
-        {
-            ctlMembership.User = User;
-            ctlMembership.DataBind();
-            AddModuleMessage("UserLockedOut", ModuleMessage.ModuleMessageType.YellowWarning, ctlMembership.UserMembership.LockedOut && (!Page.IsPostBack));
-        }
+        //private void BindMembership()
+        //{
+        //    ctlMembership.User = User;
+        //    ctlMembership.DataBind();
+        //    AddModuleMessage("UserLockedOut", ModuleMessage.ModuleMessageType.YellowWarning, ctlMembership.UserMembership.LockedOut && (!Page.IsPostBack));
+        //}
 
-        private void BindUser()
-        {
-            BindMembership();
+        //private void BindUser()
+        //{
+        //    BindMembership();
           
-        }
+        //}
 
-        private void DisableForm()
-        {
-            adminTabNav.Visible = false;
-            dnnProfileDetails.Visible = false;
-            dnnServicesDetails.Visible = false;
-            actionsRow.Visible = false;
-            ctlMembership.Visible = false;
-        }
+        //private void DisableForm()
+        //{
+        //    adminTabNav.Visible = false;
+        //    dnnProfileDetails.Visible = false;
+        //    dnnServicesDetails.Visible = false;
+        //    actionsRow.Visible = false;
+        //    ctlMembership.Visible = false;
+        //}
 
-        private void UpdateDisplayName()
-        {
-            //Update DisplayName to conform to Format
-            if (!string.IsNullOrEmpty(PortalSettings.Registration.DisplayNameFormat))
-            {
-                User.UpdateDisplayName(PortalSettings.Registration.DisplayNameFormat);
-            }
-        }
+        //private void UpdateDisplayName()
+        //{
+        //    //Update DisplayName to conform to Format
+        //    if (!string.IsNullOrEmpty(PortalSettings.Registration.DisplayNameFormat))
+        //    {
+        //        User.UpdateDisplayName(PortalSettings.Registration.DisplayNameFormat);
+        //    }
+        //}
 
 
         #endregion
@@ -376,24 +377,24 @@ namespace DotNetNuke.Modules.Admin.Users
         {
             base.OnInit(e);
 
-            cmdDelete.Click += cmdDelete_Click;
-            cmdUpdate.Click += cmdUpdate_Click;
+            //cmdDelete.Click += cmdDelete_Click;
+            //cmdUpdate.Click += cmdUpdate_Click;
             
-            ctlServices.SubscriptionUpdated += SubscriptionUpdated;
-            ctlProfile.ProfileUpdateCompleted += ProfileUpdateCompleted;
+            //ctlServices.SubscriptionUpdated += SubscriptionUpdated;
+            //ctlProfile.ProfileUpdateCompleted += ProfileUpdateCompleted;
             ctlPassword.PasswordUpdated += PasswordUpdated;
             ctlPassword.PasswordQuestionAnswerUpdated += PasswordQuestionAnswerUpdated;
 
-			email.ValidationExpression = PortalSettings.Registration.EmailValidator;
+			//email.ValidationExpression = PortalSettings.Registration.EmailValidator;
 
 			JavaScript.RequestRegistration(CommonJs.DnnPlugins);
             JavaScript.RequestRegistration(CommonJs.Knockout);
 
 
             //Set the Membership Control Properties
-            ctlMembership.ID = "Membership";
-            ctlMembership.ModuleConfiguration = ModuleConfiguration;
-            ctlMembership.UserId = UserId;
+            //ctlMembership.ID = "Membership";
+            //ctlMembership.ModuleConfiguration = ModuleConfiguration;
+            //ctlMembership.UserId = UserId;
 
             //Set the Password Control Properties
             ctlPassword.ID = "Password";
@@ -401,21 +402,21 @@ namespace DotNetNuke.Modules.Admin.Users
             ctlPassword.UserId = UserId;
 
             //Set the Profile Control Properties
-            ctlProfile.ID = "Profile";
-            ctlProfile.ModuleConfiguration = ModuleConfiguration;
-            ctlProfile.UserId = UserId;
+            //ctlProfile.ID = "Profile";
+            //ctlProfile.ModuleConfiguration = ModuleConfiguration;
+            //ctlProfile.UserId = UserId;
 
             //Set the Services Control Properties
-            ctlServices.ID = "MemberServices";
-            ctlServices.ModuleConfiguration = ModuleConfiguration;
-            ctlServices.UserId = UserId;
+            //ctlServices.ID = "MemberServices";
+            //ctlServices.ModuleConfiguration = ModuleConfiguration;
+            //ctlServices.UserId = UserId;
 
             //Define DisplayName filed Enabled Property:
-            object setting = GetSetting(UserPortalID, "Security_DisplayNameFormat");
-            if ((setting != null) && (!string.IsNullOrEmpty(Convert.ToString(setting))))
-            {
-                displayName.Enabled = false;
-            }            
+            //object setting = GetSetting(UserPortalID, "Security_DisplayNameFormat");
+            //if ((setting != null) && (!string.IsNullOrEmpty(Convert.ToString(setting))))
+            //{
+            //    displayName.Enabled = false;
+            //}            
         }
         
         /// -----------------------------------------------------------------------------
@@ -439,74 +440,74 @@ namespace DotNetNuke.Modules.Admin.Users
             }
         }
 
-        protected void cmdDelete_Click(object sender, EventArgs e)
-        {
-            UserInfo user = User;
-            if (!UserController.DeleteUser(ref user, true, false))
-            {
-                AddModuleMessage("UserDeleteError", ModuleMessage.ModuleMessageType.RedError, true);
-            }
+        //protected void cmdDelete_Click(object sender, EventArgs e)
+        //{
+        //    UserInfo user = User;
+        //    if (!UserController.DeleteUser(ref user, true, false))
+        //    {
+        //        AddModuleMessage("UserDeleteError", ModuleMessage.ModuleMessageType.RedError, true);
+        //    }
 
-            //DNN-26777 
-            new PortalSecurity().SignOut();
-            Response.Redirect(Globals.NavigateURL(PortalSettings.HomeTabId));
-        }
+        //    //DNN-26777 
+        //    new PortalSecurity().SignOut();
+        //    Response.Redirect(Globals.NavigateURL(PortalSettings.HomeTabId));
+        //}
 
-        protected void cmdUpdate_Click(object sender, EventArgs e)
-        {
-            if (userForm.IsValid && (User != null))
-            {
-                if (User.UserID == PortalSettings.AdministratorId)
-                {
-                    //Clear the Portal Cache
-                    DataCache.ClearPortalCache(UserPortalID, true);
-                }
-                try
-                {
-                    //Update DisplayName to conform to Format
-                    UpdateDisplayName();
+        //protected void cmdUpdate_Click(object sender, EventArgs e)
+        //{
+        //    if (userForm.IsValid && (User != null))
+        //    {
+        //        if (User.UserID == PortalSettings.AdministratorId)
+        //        {
+        //            //Clear the Portal Cache
+        //            DataCache.ClearPortalCache(UserPortalID, true);
+        //        }
+        //        try
+        //        {
+        //            //Update DisplayName to conform to Format
+        //            UpdateDisplayName();
 
-                    //DNN-5874 Check if unique display name is required
-                    if (PortalSettings.Registration.RequireUniqueDisplayName)
-                    {
-                        var usersWithSameDisplayName = (List<UserInfo>)MembershipProvider.Instance().GetUsersBasicSearch(PortalId, 0, 2, "DisplayName", true, "DisplayName", User.DisplayName);
-                        if (usersWithSameDisplayName.Any(user => user.UserID != User.UserID))
-                        {
-                            throw new Exception("Display Name must be unique");
-                        }
-                    }
+        //            //DNN-5874 Check if unique display name is required
+        //            if (PortalSettings.Registration.RequireUniqueDisplayName)
+        //            {
+        //                var usersWithSameDisplayName = (List<UserInfo>)MembershipProvider.Instance().GetUsersBasicSearch(PortalId, 0, 2, "DisplayName", true, "DisplayName", User.DisplayName);
+        //                if (usersWithSameDisplayName.Any(user => user.UserID != User.UserID))
+        //                {
+        //                    throw new Exception("Display Name must be unique");
+        //                }
+        //            }
 
-                    UserController.UpdateUser(UserPortalID, User);
+        //            UserController.UpdateUser(UserPortalID, User);
 
-                    // make sure username matches possibly changed email address
-                    if (PortalSettings.Registration.UseEmailAsUserName)
-                    {
-                        if (User.Username.ToLower() != User.Email.ToLower())
-                        {
-                            UserController.ChangeUsername(User.UserID, User.Email);
+        //            // make sure username matches possibly changed email address
+        //            if (PortalSettings.Registration.UseEmailAsUserName)
+        //            {
+        //                if (User.Username.ToLower() != User.Email.ToLower())
+        //                {
+        //                    UserController.ChangeUsername(User.UserID, User.Email);
 
-                            //note that this effectively will cause a signout due to the cookie not matching anymore.
-                            Response.Cookies.Add(new HttpCookie("USERNAME_CHANGED", User.Email) { Path = (!string.IsNullOrEmpty(Globals.ApplicationPath) ? Globals.ApplicationPath : "/") });
-                        }
-                    }
+        //                    //note that this effectively will cause a signout due to the cookie not matching anymore.
+        //                    Response.Cookies.Add(new HttpCookie("USERNAME_CHANGED", User.Email) { Path = (!string.IsNullOrEmpty(Globals.ApplicationPath) ? Globals.ApplicationPath : "/") });
+        //                }
+        //            }
 
-                    Response.Redirect(Request.RawUrl);
-                }
-                catch (Exception exc)
-                {
-                    Logger.Error(exc);
-                    if (exc.Message == "Display Name must be unique")
-                    {
-                        AddModuleMessage("DisplayNameNotUnique", ModuleMessage.ModuleMessageType.RedError, true);
-                    }
-                    else
-                    {
-                        AddModuleMessage("UserUpdatedError", ModuleMessage.ModuleMessageType.RedError, true);
-                    }
-                }
-            }
+        //            Response.Redirect(Request.RawUrl);
+        //        }
+        //        catch (Exception exc)
+        //        {
+        //            Logger.Error(exc);
+        //            if (exc.Message == "Display Name must be unique")
+        //            {
+        //                AddModuleMessage("DisplayNameNotUnique", ModuleMessage.ModuleMessageType.RedError, true);
+        //            }
+        //            else
+        //            {
+        //                AddModuleMessage("UserUpdatedError", ModuleMessage.ModuleMessageType.RedError, true);
+        //            }
+        //        }
+        //    }
 
-        }
+        //}
 
         /// -----------------------------------------------------------------------------
         /// <summary>
@@ -575,56 +576,56 @@ namespace DotNetNuke.Modules.Admin.Users
             }
         }
 
-        /// -----------------------------------------------------------------------------
-        /// <summary>
-        /// ProfileUpdateCompleted runs when the Profile has been updated
-        /// </summary>
-        /// <remarks>
-        /// </remarks>
-        private void ProfileUpdateCompleted(object sender, EventArgs e)
-        {
-            if (IsUserOrAdmin == false)
-            {
-                return;
-            }
-            if (IsUser)
-            {
-                //Notify the user that his/her profile was updated
-                Mail.SendMail(User, MessageType.ProfileUpdated, PortalSettings);
+        ///// -----------------------------------------------------------------------------
+        ///// <summary>
+        ///// ProfileUpdateCompleted runs when the Profile has been updated
+        ///// </summary>
+        ///// <remarks>
+        ///// </remarks>
+        //private void ProfileUpdateCompleted(object sender, EventArgs e)
+        //{
+        //    if (IsUserOrAdmin == false)
+        //    {
+        //        return;
+        //    }
+        //    if (IsUser)
+        //    {
+        //        //Notify the user that his/her profile was updated
+        //        Mail.SendMail(User, MessageType.ProfileUpdated, PortalSettings);
 
-                ProfilePropertyDefinition localeProperty = User.Profile.GetProperty("PreferredLocale");
-                if (localeProperty.IsDirty)
-                {
-                    //store preferredlocale in cookie, if none specified set to portal default.
-                    if (User.Profile.PreferredLocale == string.Empty)
-                    {
-                        Localization.SetLanguage(PortalController.GetPortalDefaultLanguage(User.PortalID));
-                    }
-                    else
-                    {
-                        Localization.SetLanguage(User.Profile.PreferredLocale);
-                    }
-                }
-            }
+        //        ProfilePropertyDefinition localeProperty = User.Profile.GetProperty("PreferredLocale");
+        //        if (localeProperty.IsDirty)
+        //        {
+        //            //store preferredlocale in cookie, if none specified set to portal default.
+        //            if (User.Profile.PreferredLocale == string.Empty)
+        //            {
+        //                Localization.SetLanguage(PortalController.GetPortalDefaultLanguage(User.PortalID));
+        //            }
+        //            else
+        //            {
+        //                Localization.SetLanguage(User.Profile.PreferredLocale);
+        //            }
+        //        }
+        //    }
 
-            //Redirect to same page (this will update all controls for any changes to profile
-            //and leave us at Page 0 (User Credentials)
-            Response.Redirect(Request.RawUrl, true);
-        }
+        //    //Redirect to same page (this will update all controls for any changes to profile
+        //    //and leave us at Page 0 (User Credentials)
+        //    Response.Redirect(Request.RawUrl, true);
+        //}
 
-        private void SubscriptionUpdated(object sender, MemberServices.SubscriptionUpdatedEventArgs e)
-        {
-            string message;
-            if (e.Cancel)
-            {
-                message = string.Format(Localization.GetString("UserUnSubscribed", LocalResourceFile), e.RoleName);
-            }
-            else
-            {
-                message = string.Format(Localization.GetString("UserSubscribed", LocalResourceFile), e.RoleName);
-            }
-            AddLocalizedModuleMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess, true);
-        }
+        //private void SubscriptionUpdated(object sender, MemberServices.SubscriptionUpdatedEventArgs e)
+        //{
+        //    string message;
+        //    if (e.Cancel)
+        //    {
+        //        message = string.Format(Localization.GetString("UserUnSubscribed", LocalResourceFile), e.RoleName);
+        //    }
+        //    else
+        //    {
+        //        message = string.Format(Localization.GetString("UserSubscribed", LocalResourceFile), e.RoleName);
+        //    }
+        //    AddLocalizedModuleMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess, true);
+        //}
 
         #endregion
     }
