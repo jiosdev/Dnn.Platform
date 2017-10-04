@@ -21,7 +21,6 @@
 #region Usings
 
 using System;
-using System.Data.Entity;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
@@ -33,8 +32,6 @@ using DotNetNuke.Services.FileSystem;
 using DotNetNuke.Services.Mail;
 using DotNetNuke.UI.Skins.Controls;
 using DotNetNuke.Services.Localization;
-using YA.Business;
-using YA.CMSAdapter.Domain;
 
 #endregion
 
@@ -209,8 +206,6 @@ namespace DotNetNuke.Modules.Admin.Users
         /// -----------------------------------------------------------------------------
         public override void DataBind()
         {
-            YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(User);
-            YaUser = new YA.Domain.User(yaUserInfo);
             //disable/enable buttons
             if (UserInfo.UserID == User.UserID)
             {
@@ -309,8 +304,6 @@ namespace DotNetNuke.Modules.Admin.Users
 
             //Update User
             UserController.UpdateUser(PortalId, User);
-            YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(User);
-            Usermanager.LogChangesForUserWithOutSavingUser(UserInfo.UserID, YaUser, yaUserInfo, EntityState.Modified);
 
             //Update User Roles if needed
             if (!User.IsSuperUser && User.IsInRole("Unverified Users") && PortalSettings.UserRegistration == (int)Common.Globals.PortalRegistrationType.VerifiedRegistration)
@@ -351,8 +344,6 @@ namespace DotNetNuke.Modules.Admin.Users
 
                 //Update User
                 UserController.UpdateUser(PortalId, User);
-                YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(User);
-                Usermanager.LogChangesForUserWithOutSavingUser(UserInfo.UserID, YaUser, yaUserInfo, EntityState.Modified);
 
                 OnMembershipPasswordUpdateChanged(EventArgs.Empty); 
             }
@@ -384,8 +375,6 @@ namespace DotNetNuke.Modules.Admin.Users
 
             //Update User
             UserController.UpdateUser(PortalId, User);
-            YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(User);
-            Usermanager.LogChangesForUserWithOutSavingUser(UserInfo.UserID, YaUser, yaUserInfo, EntityState.Modified);
 
             OnMembershipUnAuthorized(EventArgs.Empty);
         }
@@ -408,8 +397,6 @@ namespace DotNetNuke.Modules.Admin.Users
             User.IsSuperUser = !currentSuperUserState;
             //Update User
             UserController.UpdateUser(PortalId, User);
-            YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(User);
-            Usermanager.LogChangesForUserWithOutSavingUser(UserInfo.UserID, YaUser, yaUserInfo, EntityState.Modified);
             DataCache.ClearCache();
    
             if (currentSuperUserState)
@@ -449,18 +436,5 @@ namespace DotNetNuke.Modules.Admin.Users
 		#endregion
     }
 
-    public partial class Membership
-    {
-        #region private properties
-
-        private UserManager _userManager;
-        private UserManager Usermanager => _userManager ?? (_userManager = new UserManager());
-        private YA.Domain.User YaUser { get; set; }
-        private CmsManager _cmsManager;
-
-        private CmsManager CmsManager => _cmsManager ?? (_cmsManager = new CmsManager());
-
-        #endregion
-    }
 
 }

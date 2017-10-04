@@ -46,6 +46,9 @@ using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Log.EventLog;
 using DotNetNuke.Services.Mail;
 using DotNetNuke.Services.Messaging.Data;
+using YA.Business;
+using YA.Business.Newsletter;
+using YA.CMSAdapter.Domain;
 using MembershipProvider = DotNetNuke.Security.Membership.MembershipProvider;
 
 namespace DotNetNuke.Entities.Users
@@ -843,6 +846,7 @@ namespace DotNetNuke.Entities.Users
         /// <param name="newUsername">new one</param>
         public static void ChangeUsername(int userId, string newUsername)
         {
+            LogChangesForUserAndUpdateSubscriberInfo(userId);
             MembershipProvider.Instance().ChangeUsername(userId, newUsername);
         }
 
@@ -930,6 +934,7 @@ namespace DotNetNuke.Entities.Users
                 }
 
                 EventManager.Instance.OnUserCreated(new UserEventArgs { User = user });
+                LogChangesForUserAndUpdateSubscriberInfo(user, true);
             }
 
             //Reset PortalId
@@ -1926,6 +1931,7 @@ namespace DotNetNuke.Entities.Users
         /// </remarks>
         internal static void UpdateUser(int portalId, UserInfo user, bool loggedAction, bool sendNotification, bool clearCache)
         {
+            LogChangesForUserAndUpdateSubscriberInfo(user);
             var originalPortalId = user.PortalID;
             portalId = GetEffectivePortalId(portalId);
             user.PortalID = portalId;
@@ -2220,6 +2226,35 @@ namespace DotNetNuke.Entities.Users
             UpdateUser(portalId, user);
             ApproveUser(user);
         }
+
+        #endregion
+
+        #region Overrides 
+
+        #region Methods
+
+        private static void LogChangesForUserAndUpdateSubscriberInfo(int updatedUserId)
+        {
+            UserInfo updatedUser = Instance.GetUser(Instance.GetCurrentUserInfo().PortalID, updatedUserId);
+            LogChangesForUserAndUpdateSubscriberInfo(updatedUser);
+        }
+
+        private static void LogChangesForUserAndUpdateSubscriberInfo(UserInfo updatedUser, bool isAdd = false)
+        {
+            YaUserInfo yaUpdatedUser = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(updatedUser);
+            UserManager.LogChangesForUserAndUpdateSubscriberInfo(yaUpdatedUser, isAdd);
+        }
+
+        #endregion
+
+        #region Properties
+
+        private static CmsManager _cmsManager;
+        private static CmsManager CmsManager => _cmsManager ?? (_cmsManager = new CmsManager());
+        private static UserManager _userManager;
+        private static UserManager UserManager => _userManager ?? (_userManager = new UserManager());
+
+        #endregion
 
         #endregion
 

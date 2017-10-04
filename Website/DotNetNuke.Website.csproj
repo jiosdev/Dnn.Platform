@@ -99,9 +99,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DNN Platform\DotNetNuke.WebUtility\bin\DotNetNuke.WebUtility.dll</HintPath>
     </Reference>
-    <Reference Include="EntityFramework">
-      <HintPath>..\Library\EntityFramework.dll</HintPath>
-    </Reference>
     <Reference Include="ManageAccount">
       <HintPath>..\Library\ManageAccount.dll</HintPath>
     </Reference>
@@ -180,9 +177,6 @@
     </Reference>
     <Reference Include="YA.Controls">
       <HintPath>..\Library\YA.Controls.dll</HintPath>
-    </Reference>
-    <Reference Include="YA.Domain">
-      <HintPath>..\Library\YA.Domain.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -3376,6 +3370,9 @@
       <Project>{a86ebc44-2bc8-4c4a-997b-2708e4aac345}</Project>
       <Name>DotNetNuke.Modules.DDRMenu</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

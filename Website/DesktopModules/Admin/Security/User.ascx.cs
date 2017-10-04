@@ -22,7 +22,6 @@
 
 using System;
 using System.Collections;
-using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -48,9 +47,6 @@ using Globals = DotNetNuke.Common.Globals;
 using System.Web.UI.WebControls;
 using DotNetNuke.Framework.JavaScriptLibraries;
 using DotNetNuke.Web.Client;
-using YA.Business;
-using YA.Business.Newsletter;
-using YA.CMSAdapter.Domain;
 
 #endregion
 
@@ -284,12 +280,6 @@ namespace DotNetNuke.Modules.Admin.Users
             args.CreateStatus = createStatus;
             OnUserCreated(args);
             OnUserCreateCompleted(args);
-            if (createStatus == UserCreateStatus.Success)
-            {
-                YaUser = new YA.Domain.User();
-                YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(User);
-                UserManager.LogChangesForUserWithOutSavingUser(UserInfo.UserID, YaUser, yaUserInfo, EntityState.Added);
-            }
         }
 
         /// -----------------------------------------------------------------------------
@@ -308,8 +298,6 @@ namespace DotNetNuke.Modules.Admin.Users
                 ClientAPI.AddButtonConfirm(cmdDelete, confirmString);
                 chkRandom.Checked = false;
             }
-            YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(User);
-            YaUser = new YA.Domain.User(yaUserInfo);
 
             cmdDelete.Visible = false;
             cmdRemove.Visible = false;
@@ -624,9 +612,6 @@ namespace DotNetNuke.Modules.Admin.Users
                         }
 
                         UserController.UpdateUser(UserPortalID, User);
-                        YaUserInfo yaUserInfo = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(User);
-                        UserManager.LogChangesForUserWithOutSavingUser(UserInfo.UserID, YaUser, yaUserInfo, EntityState.Modified);
-                        NewsletterManager.UpdateSubscriberInfo(YaUser);
 
                         if (PortalSettings.Registration.UseEmailAsUserName && (User.Username.ToLower() != User.Email.ToLower()))
                         {
@@ -648,25 +633,5 @@ namespace DotNetNuke.Modules.Admin.Users
         }
 		
 		#endregion
-    }
-
-    public partial class User
-    {
-        #region private Properties
-
-        private UserManager _userManager;
-        private NewsletterManager _newsletterManager;
-
-        private UserManager UserManager => _userManager ?? (_userManager = new UserManager());
-
-        private NewsletterManager NewsletterManager => _newsletterManager ??
-                                                       (_newsletterManager = new NewsletterManager());
-
-        private YA.Domain.User YaUser { get; set; }
-        private CmsManager _cmsManager;
-
-        private CmsManager CmsManager => _cmsManager ?? (_cmsManager = new CmsManager());
-
-        #endregion
     }
 }
