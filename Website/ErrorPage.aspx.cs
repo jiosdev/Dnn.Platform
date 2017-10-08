@@ -82,6 +82,11 @@ namespace DotNetNuke.Services.Exceptions
             {
                 Response.StatusCode = statusCode;
             }
+            //404 Error - Redirect to 404 ErrorPage
+            if (statusCode == 404)
+            {
+                Response.Redirect("~/404_Error_Page");
+            }
         }
 
         [Obsolete("Function obsoleted in 5.6.1 as no longer used in core - version identification can be useful to potential hackers if used incorrectly")]

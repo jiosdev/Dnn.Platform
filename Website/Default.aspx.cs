@@ -832,8 +832,6 @@ namespace DotNetNuke.Framework
                     : Request.UrlReferrer.ToString());
             };
 
-            //if (!EntityFrameworkProfilerBootstrapper.IsStarted)
-            //EntityFrameworkProfilerBootstrapper.PreStart();
         }
     }
 }
