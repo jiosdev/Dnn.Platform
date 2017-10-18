@@ -7,7 +7,7 @@
 <div class="ya-standard-page">
   
   <h1 class="search-results-title">Search Results</h1>
-  <p>Results do not include YA Directory profiles.. To find a <a class="ya-action" href="/Directory?Type=Teacher">Teacher</a> or <a class="ya-action" href="/Directory?Type=School">School</a> please use the <a class="ya-action ya_with-arrow" href="/Directory?Type=Teacher">Directory Search</a></p>
+  <p>Results do not include Yoga Alliance Directory profiles. To find a Teacher, School, or Continuing Education Provider, please use the <a class="ya-action ya_with-arrow" href="/Directory?Type=Teacher">Directory Search</a></p>
 
   <div class="dnnSearchBoxPanel">
       <a href="javascript:void(0)" class="dnnSearchResultAdvancedTip"><%= LinkAdvancedTipText %></a>
