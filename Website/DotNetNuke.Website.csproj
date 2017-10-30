@@ -178,6 +178,9 @@
     <Reference Include="YA.Controls">
       <HintPath>..\Library\YA.Controls.dll</HintPath>
     </Reference>
+    <Reference Include="YA.Domain">
+      <HintPath>..\Library\YA.Domain.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SolutionInfo.cs">

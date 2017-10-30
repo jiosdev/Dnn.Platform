@@ -798,6 +798,7 @@ namespace DotNetNuke.Framework
         protected override void OnInitComplete(EventArgs e)
         {
             base.OnInitComplete(e);
+            GoogleTagManagerVisibility = YA.Domain.Enums.Constants.Settings.ApplicationSettings.IsProduction;
             // Change Page Title
             string pageTitle = Title;
             if (pageTitle.StartsWith("Yoga"))
@@ -832,6 +833,11 @@ namespace DotNetNuke.Framework
                     : Request.UrlReferrer.ToString());
             };
 
+        }
+
+        public bool GoogleTagManagerVisibility
+        {
+            set { DivGoogleTagManager.Visible = value; }
         }
     }
 }
