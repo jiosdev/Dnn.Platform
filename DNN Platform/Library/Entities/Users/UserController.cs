@@ -846,7 +846,7 @@ namespace DotNetNuke.Entities.Users
         /// <param name="newUsername">new one</param>
         public static void ChangeUsername(int userId, string newUsername)
         {
-            LogChangesForUserAndUpdateSubscriberInfo(userId);
+            LogChangesForChangeUserName(userId, newUsername);
             MembershipProvider.Instance().ChangeUsername(userId, newUsername);
         }
 
@@ -2233,10 +2233,9 @@ namespace DotNetNuke.Entities.Users
 
         #region Methods
 
-        private static void LogChangesForUserAndUpdateSubscriberInfo(int updatedUserId)
+        private static void LogChangesForChangeUserName(int userId,string newUserName)
         {
-            UserInfo updatedUser = Instance.GetUser(Instance.GetCurrentUserInfo().PortalID, updatedUserId);
-            LogChangesForUserAndUpdateSubscriberInfo(updatedUser);
+            UserManager.LogChangesForChangeUserName(userId, newUserName);
         }
 
         private static void LogChangesForUserAndUpdateSubscriberInfo(UserInfo updatedUser, bool isAdd = false)
