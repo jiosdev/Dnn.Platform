@@ -690,8 +690,7 @@ namespace DotNetNuke.Services.Social.Messaging.Scheduler
                 var emailBodyItemContent = GetEmailItemContent(portalSettings, messageRecipient, emailBodyItemTemplate);
                 var subject = message.Subject; //string.Format(emailSubjectTemplate, portalSettings.PortalName);
                 var body = GetEmailBody(emailBodyTemplate, emailBodyItemContent, portalSettings, toUser);
-
-                fromAddress = "\"Yoga Alliance Registry\" <" + fromAddress + ">";
+                fromAddress = senderAddress;
                 // Include the attachment in the email message if configured to do so
                 if (InternalMessagingController.Instance.AttachmentsAllowed(message.PortalID))
                 {
