@@ -50,7 +50,6 @@ using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Log.EventLog;
 using DotNetNuke.Services.Mail;
 using DotNetNuke.Services.Messaging.Data;
-using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using MembershipProvider = DotNetNuke.Security.Membership.MembershipProvider;
 
@@ -2293,14 +2292,47 @@ namespace DotNetNuke.Entities.Users
                     HttpResponseMessage result = httpClient.PostAsync(serviceUrl, content).Result;
                     if (!result.IsSuccessStatusCode)
                     {
-                        logger.Error(
-                            $"LogChangesForUserAndUpdateSubscriberInfo Service Error , StatusCode: {result.StatusCode} , Content : {result.Content.ReadAsStringAsync().Result}");
+                        string serviceError =
+                            $"LogChangesForUserAndUpdateSubscriberInfo Service Error , StatusCode: {result.StatusCode} , Content : {result.Content.ReadAsStringAsync().Result}";
+                        // http://www.ifinity.com.au/Blog/EntryId/114/Creating-Exception-Logging-with-DotNetNuke
+                        LogInfo logInfo = new LogInfo
+                        {
+                            LogUserID = Instance.GetCurrentUserInfo().UserID,
+                            LogUserName = Instance.GetCurrentUserInfo().Username,
+                            LogPortalID = PortalSettings.Current.PortalId,
+                            LogTypeKey = "GENERAL_EXCEPTION",
+
+                        };
+                        logInfo.AddProperty("LogChangesForUserAndUpdateSubscriberInfo", serviceError);
+                        // Log to Event Viewer Logs
+                        EventLogController.Instance.AddLog(logInfo);
+                        // Log to DNN portal Logs
+                        logger.Error(serviceError);
                     }
                 }
 
             }
             catch (Exception e)
             {
+                var serviceError = e.Message + " " + e.StackTrace;
+                if (e.InnerException != null)
+                {
+                    serviceError += e.InnerException != null
+                        ? " " + e.InnerException.Message
+                        : string.Empty;
+                }
+                LogInfo logInfo = new LogInfo
+                {
+                    LogUserID = Instance.GetCurrentUserInfo().UserID,
+                    LogUserName = Instance.GetCurrentUserInfo().Username,
+                    LogPortalID = PortalSettings.Current.PortalId,
+                    LogTypeKey = "GENERAL_EXCEPTION",
+
+                };
+                logInfo.AddProperty("LogChangesForUserAndUpdateSubscriberInfo", serviceError);
+                // Log to Event Viewer Logs
+                EventLogController.Instance.AddLog(logInfo);
+                // Log to DNN portal Logs
                 logger.Error("LogChangesForUserAndUpdateSubscriberInfo Service Error", e);
             }
 
