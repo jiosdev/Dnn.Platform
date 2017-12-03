@@ -2283,7 +2283,9 @@ namespace DotNetNuke.Entities.Users
                         UserInfo = yaUserChangesInfo,
                         IsAdd = isAdd,
                         OldUserName = Instance.OldUserName,
-                        CurrentUserId = Instance.GetCurrentUserInfo().UserID
+                        CurrentUserId = Instance.GetCurrentUserInfo().UserID,
+                        Url = HttpContext.Current.Request.Url.AbsoluteUri,
+                        RawUrl = HttpContext.Current.Request.RawUrl
                     };
 
                     StringContent content = new StringContent(JsonConvert.SerializeObject(userChangesLoggerVm),

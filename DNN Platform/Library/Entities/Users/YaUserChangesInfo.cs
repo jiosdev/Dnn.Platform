@@ -34,8 +34,13 @@ namespace DotNetNuke.Entities.Users
     {
         public YaUserChangesInfo UserInfo { get; set; }
         public bool IsAdd { get; set; }
+
         public string OldUserName { get; set; }
+
         // Current Logged in user id
         public int CurrentUserId { get; set; }
+
+        public string Url { get; set; }
+        public string RawUrl { get; set; }
     }
 }
