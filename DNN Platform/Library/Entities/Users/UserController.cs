@@ -23,6 +23,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Dynamic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -2285,7 +2287,9 @@ namespace DotNetNuke.Entities.Users
                         OldUserName = Instance.OldUserName,
                         CurrentUserId = Instance.GetCurrentUserInfo().UserID,
                         Url = HttpContext.Current.Request.Url.AbsoluteUri,
-                        RawUrl = HttpContext.Current.Request.RawUrl
+                        RawUrl = HttpContext.Current.Request.RawUrl,
+                        IpAddress = GetHostIpAddress(),
+                        BrowserInfo = GetBrowserDetails()
                     };
 
                     StringContent content = new StringContent(JsonConvert.SerializeObject(userChangesLoggerVm),
@@ -2341,7 +2345,51 @@ namespace DotNetNuke.Entities.Users
             // Clear Instance  oldUserName 
             Instance.OldUserName = null;
         }
+        private static string GetBrowserDetails()
+        {
+            try
+            {
+                if (HttpContext.Current != null)
+                {
+                    var browser = HttpContext.Current.Request.Browser;
+                    dynamic browserDetails = new ExpandoObject();
+                    browserDetails.Name = browser.Browser;
+                    browserDetails.Type = browser.Type;
+                    browserDetails.Version = browser.Version;
+                    browserDetails.MajorVersion = browser.MajorVersion.ToString();
+                    browserDetails.MinorVersion = browser.MinorVersion.ToString(CultureInfo.InvariantCulture);
+                    browserDetails.Platform = browser.Platform;
+                    browserDetails.Beta = browser.Beta.ToString();
+                    browserDetails.Crawler = browser.Crawler.ToString();
+                    browserDetails.AOL = browser.AOL.ToString();
+                    browserDetails.Win16 = browser.Win16.ToString();
+                    browserDetails.Win32 = browser.Win32.ToString();
+                    browserDetails.Frames = browser.Frames.ToString();
+                    browserDetails.Tables = browser.Tables.ToString();
+                    browserDetails.Cookies = browser.Cookies.ToString();
+                    browserDetails.VbScript = browser.VBScript.ToString();
+                    browserDetails.EcmaScriptVersion = browser.EcmaScriptVersion.ToString();
+                    browserDetails.JavaApplets = browser.JavaApplets.ToString();
+                    browserDetails.ActiveXControls = browser.ActiveXControls.ToString();
+                    browserDetails.JavaScriptVersion = browser["JavaScriptVersion"];
 
+                    return JsonConvert.SerializeObject(browserDetails);
+                }
+                return string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+        private static string GetHostIpAddress()
+        {
+            if (HttpContext.Current != null)
+            {
+                return HttpContext.Current.Request.UserHostAddress;
+            }
+            return null;
+        }
         #endregion
 
         #region Properties

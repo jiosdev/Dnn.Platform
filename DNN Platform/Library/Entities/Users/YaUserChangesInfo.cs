@@ -42,5 +42,7 @@ namespace DotNetNuke.Entities.Users
 
         public string Url { get; set; }
         public string RawUrl { get; set; }
+        public string IpAddress { get; set; }
+        public string BrowserInfo { get; set; }
     }
 }
