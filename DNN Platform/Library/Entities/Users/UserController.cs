@@ -23,10 +23,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Dynamic;
+using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
+using System.Web.Configuration;
 using DotNetNuke.Collections.Internal;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
@@ -37,6 +42,7 @@ using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Profile;
 using DotNetNuke.Entities.Users.Membership;
 using DotNetNuke.Framework;
+using DotNetNuke.Instrumentation;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Membership;
 using DotNetNuke.Security.Permissions;
@@ -46,9 +52,7 @@ using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Log.EventLog;
 using DotNetNuke.Services.Mail;
 using DotNetNuke.Services.Messaging.Data;
-using YA.Business;
-using YA.Business.Newsletter;
-using YA.CMSAdapter.Domain;
+using Newtonsoft.Json;
 using MembershipProvider = DotNetNuke.Security.Membership.MembershipProvider;
 
 namespace DotNetNuke.Entities.Users
@@ -846,7 +850,8 @@ namespace DotNetNuke.Entities.Users
         /// <param name="newUsername">new one</param>
         public static void ChangeUsername(int userId, string newUsername)
         {
-            LogChangesForChangeUserName(userId, newUsername);
+            Instance.OldUserName =
+                MembershipProvider.Instance().GetUser(PortalSettings.Current.PortalId, userId).Username;
             MembershipProvider.Instance().ChangeUsername(userId, newUsername);
         }
 
@@ -2233,25 +2238,162 @@ namespace DotNetNuke.Entities.Users
 
         #region Methods
 
-        private static void LogChangesForChangeUserName(int userId,string newUserName)
-        {
-            UserManager.LogChangesForChangeUserName(userId, newUserName);
-        }
-
         private static void LogChangesForUserAndUpdateSubscriberInfo(UserInfo updatedUser, bool isAdd = false)
         {
-            YaUserInfo yaUpdatedUser = CmsManager.YaAdapter.UserAdapter.GetYaUserInfo(updatedUser);
-            UserManager.LogChangesForUserAndUpdateSubscriberInfo(yaUpdatedUser, isAdd);
-        }
+            var logger = LoggerSource.Instance.GetLogger(typeof(UserController));
+            try
+            {
+                // Ignore the update when User is just Created
+                if (isAdd == false && updatedUser.CreatedOnDate == default(DateTime))
+                    return;
 
+                string baseUrl = HttpContext.Current.Request.Url.Scheme + "://" +
+                                 HttpContext.Current.Request.Url.Authority;
+                string serviceUrl =
+                    baseUrl +
+                    "/desktopmodules/YAServices/API/UserChangesLogger/LogChangesForUserAndUpdateSubscriberInfo";
+                MachineKeySection key =
+                    WebConfigurationManager.GetSection("system.web/machineKey") as MachineKeySection;
+                var token = key?.ValidationKey ?? string.Empty;
+
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    httpClient.Timeout = new TimeSpan(0, 0, 5, 0);
+                    httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
+                    httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json");
+                    httpClient.DefaultRequestHeaders.Add("token", token);
+
+                    var yaUserChangesInfo = new YaUserChangesInfo
+                    {
+                        UserId = updatedUser.UserID,
+                        Username = updatedUser.Username,
+                        Email = updatedUser.Email,
+                        AffiliateID = updatedUser.AffiliateID,
+                        CreatedByUserID = updatedUser.CreatedByUserID,
+                        CreatedOnDate = updatedUser.CreatedOnDate,
+                        DisplayName = updatedUser.DisplayName,
+                        FirstName = updatedUser.FirstName,
+                        IsSuperUser = updatedUser.IsSuperUser,
+                        LastIPAddress = updatedUser.LastIPAddress,
+                        LastModifiedByUserID = updatedUser.LastModifiedByUserID,
+                        LastModifiedOnDate = updatedUser.LastModifiedOnDate,
+                        LastName = updatedUser.LastName
+                    };
+
+                    UserChangesLoggerVm userChangesLoggerVm = new UserChangesLoggerVm
+                    {
+                        UserInfo = yaUserChangesInfo,
+                        IsAdd = isAdd,
+                        OldUserName = Instance.OldUserName,
+                        CurrentUserId = Instance.GetCurrentUserInfo().UserID,
+                        Url = HttpContext.Current.Request.Url.AbsoluteUri,
+                        RawUrl = HttpContext.Current.Request.RawUrl,
+                        IpAddress = GetHostIpAddress(),
+                        BrowserInfo = GetBrowserDetails()
+                    };
+
+                    StringContent content = new StringContent(JsonConvert.SerializeObject(userChangesLoggerVm),
+                        Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage result = httpClient.PostAsync(serviceUrl, content).Result;
+                    if (!result.IsSuccessStatusCode)
+                    {
+                        string serviceError =
+                            $"LogChangesForUserAndUpdateSubscriberInfo Service Error , StatusCode: {result.StatusCode} , Content : {result.Content.ReadAsStringAsync().Result}";
+                        // http://www.ifinity.com.au/Blog/EntryId/114/Creating-Exception-Logging-with-DotNetNuke
+                        LogInfo logInfo = new LogInfo
+                        {
+                            LogUserID = Instance.GetCurrentUserInfo().UserID,
+                            LogUserName = Instance.GetCurrentUserInfo().Username,
+                            LogPortalID = PortalSettings.Current.PortalId,
+                            LogTypeKey = "GENERAL_EXCEPTION",
+
+                        };
+                        logInfo.AddProperty("LogChangesForUserAndUpdateSubscriberInfo", serviceError);
+                        // Log to Event Viewer Logs
+                        EventLogController.Instance.AddLog(logInfo);
+                        // Log to DNN portal Logs
+                        logger.Error(serviceError);
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                var serviceError = e.Message + " " + e.StackTrace;
+                if (e.InnerException != null)
+                {
+                    serviceError += e.InnerException != null
+                        ? " " + e.InnerException.Message
+                        : string.Empty;
+                }
+                LogInfo logInfo = new LogInfo
+                {
+                    LogUserID = Instance.GetCurrentUserInfo().UserID,
+                    LogUserName = Instance.GetCurrentUserInfo().Username,
+                    LogPortalID = PortalSettings.Current.PortalId,
+                    LogTypeKey = "GENERAL_EXCEPTION",
+
+                };
+                logInfo.AddProperty("LogChangesForUserAndUpdateSubscriberInfo", serviceError);
+                // Log to Event Viewer Logs
+                EventLogController.Instance.AddLog(logInfo);
+                // Log to DNN portal Logs
+                logger.Error("LogChangesForUserAndUpdateSubscriberInfo Service Error", e);
+            }
+
+            // Clear Instance  oldUserName 
+            Instance.OldUserName = null;
+        }
+        private static string GetBrowserDetails()
+        {
+            try
+            {
+                if (HttpContext.Current != null)
+                {
+                    var browser = HttpContext.Current.Request.Browser;
+                    dynamic browserDetails = new ExpandoObject();
+                    browserDetails.Name = browser.Browser;
+                    browserDetails.Type = browser.Type;
+                    browserDetails.Version = browser.Version;
+                    browserDetails.MajorVersion = browser.MajorVersion.ToString();
+                    browserDetails.MinorVersion = browser.MinorVersion.ToString(CultureInfo.InvariantCulture);
+                    browserDetails.Platform = browser.Platform;
+                    browserDetails.Beta = browser.Beta.ToString();
+                    browserDetails.Crawler = browser.Crawler.ToString();
+                    browserDetails.AOL = browser.AOL.ToString();
+                    browserDetails.Win16 = browser.Win16.ToString();
+                    browserDetails.Win32 = browser.Win32.ToString();
+                    browserDetails.Frames = browser.Frames.ToString();
+                    browserDetails.Tables = browser.Tables.ToString();
+                    browserDetails.Cookies = browser.Cookies.ToString();
+                    browserDetails.VbScript = browser.VBScript.ToString();
+                    browserDetails.EcmaScriptVersion = browser.EcmaScriptVersion.ToString();
+                    browserDetails.JavaApplets = browser.JavaApplets.ToString();
+                    browserDetails.ActiveXControls = browser.ActiveXControls.ToString();
+                    browserDetails.JavaScriptVersion = browser["JavaScriptVersion"];
+
+                    return JsonConvert.SerializeObject(browserDetails);
+                }
+                return string.Empty;
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
+        }
+        private static string GetHostIpAddress()
+        {
+            if (HttpContext.Current != null)
+            {
+                return HttpContext.Current.Request.UserHostAddress;
+            }
+            return null;
+        }
         #endregion
 
         #region Properties
-
-        private static CmsManager _cmsManager;
-        private static CmsManager CmsManager => _cmsManager ?? (_cmsManager = new CmsManager());
-        private static UserManager _userManager;
-        private static UserManager UserManager => _userManager ?? (_userManager = new UserManager());
+        public string OldUserName { get; set; }
 
         #endregion
 

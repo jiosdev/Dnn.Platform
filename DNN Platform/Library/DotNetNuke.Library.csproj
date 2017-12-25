@@ -145,6 +145,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
@@ -175,13 +176,6 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="YA.Business, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\YA.Business.dll</HintPath>
-    </Reference>
-    <Reference Include="YA.CMSAdapter">
-      <HintPath>..\..\Library\YA.CMSAdapter.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\SolutionInfo.cs">
@@ -210,6 +204,7 @@
     <Compile Include="Entities\Portals\IPortalTemplateEventHandlers.cs" />
     <Compile Include="Entities\Portals\PortalTemplateEventArgs.cs" />
     <Compile Include="Entities\Users\UpdateUserEventArgs.cs" />
+    <Compile Include="Entities\Users\YaUserChangesInfo.cs" />
     <Compile Include="Obsolete\Arg.cs" />
     <Compile Include="Entities\Content\ContentTypeMemberNameFixer.cs" />
     <Compile Include="Collections\EnumerableExtensions.cs" />
