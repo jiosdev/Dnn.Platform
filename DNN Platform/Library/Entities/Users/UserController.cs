@@ -1750,7 +1750,8 @@ namespace DotNetNuke.Entities.Users
         public static bool ResetAndChangePassword(UserInfo user, string newPassword)
         {
             var portalSettings = PortalController.Instance.GetCurrentPortalSettings();
-            if (GetCurrentUserInternal().IsInRole(portalSettings.AdministratorRoleName))
+            var currentUser = GetCurrentUserInternal();
+            if (currentUser.IsInRole(portalSettings.AdministratorRoleName) || currentUser.IsInRole("YA Staff"))
             {
                 string resetPassword = ResetPassword(user, String.Empty);
                 return ChangePassword(user, resetPassword, newPassword);
