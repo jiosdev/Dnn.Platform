@@ -1751,7 +1751,7 @@ namespace DotNetNuke.Entities.Users
         {
             var portalSettings = PortalController.Instance.GetCurrentPortalSettings();
             var currentUser = GetCurrentUserInternal();
-            if (currentUser.IsInRole(portalSettings.AdministratorRoleName) || currentUser.IsInRole("YA Staff"))
+            if (currentUser.IsInRole(portalSettings.AdministratorRoleName) || currentUser.IsInRole("YA_MemberServices"))
             {
                 string resetPassword = ResetPassword(user, String.Empty);
                 return ChangePassword(user, resetPassword, newPassword);
