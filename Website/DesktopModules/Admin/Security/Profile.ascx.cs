@@ -29,6 +29,7 @@ using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Profile;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Framework;
+using DotNetNuke.Security.Permissions;
 using DotNetNuke.UI.WebControls;
 using DotNetNuke.UI.Skins.Controls;
 using MembershipProvider = DotNetNuke.Security.Membership.MembershipProvider;
@@ -131,9 +132,17 @@ namespace DesktopModules.Admin.Security
             }
         }
 
-		#endregion
+        #endregion
 
-		#region Public Methods
+
+        #region Private Properties
+
+        private bool IsAdminOrCanEditModule =>
+            IsAdmin || ModulePermissionController.CanEditModuleContent(ModuleConfiguration);
+
+        #endregion
+
+        #region Public Methods
 
         /// -----------------------------------------------------------------------------
         /// <summary>
@@ -148,7 +157,7 @@ namespace DesktopModules.Admin.Security
 			var imageType = new ListController().GetListEntryInfo("DataType", "Image");
             foreach (ProfilePropertyDefinition profProperty in UserProfile.ProfileProperties)
             {
-                if (IsAdmin && !IsProfile)
+                if (IsAdminOrCanEditModule && !IsProfile)
                 {
                     profProperty.Visible = true;
                 }

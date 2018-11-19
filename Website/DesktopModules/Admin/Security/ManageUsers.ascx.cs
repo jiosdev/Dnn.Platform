@@ -166,6 +166,9 @@ namespace DotNetNuke.Modules.Admin.Users
             }
         }
 
+        private bool IsAdminOrCanEditModule =>
+            IsAdmin || ModulePermissionController.CanEditModuleContent(ModuleConfiguration);
+
         #endregion
 
         #region Public Properties
@@ -327,7 +330,7 @@ namespace DotNetNuke.Modules.Admin.Users
             if (IsEdit)
             {
                 //Check if user has admin rights
-                if (!IsAdmin || (User.IsInRole(PortalSettings.AdministratorRoleName) && !PortalSecurity.IsInRole(PortalSettings.AdministratorRoleName)))
+                if (!IsAdminOrCanEditModule || (User.IsInRole(PortalSettings.AdministratorRoleName) && !PortalSecurity.IsInRole(PortalSettings.AdministratorRoleName)))
                 {
                     AddModuleMessage("NotAuthorized", ModuleMessage.ModuleMessageType.YellowWarning, true);
                     DisableForm();
@@ -380,7 +383,7 @@ namespace DotNetNuke.Modules.Admin.Users
             ctlUser.DataBind();
 
             //Bind the Membership
-            if (AddUser || (!IsAdmin))
+            if (AddUser || (!IsAdminOrCanEditModule))
             {
 				membershipRow.Visible = false;
             }
@@ -436,7 +439,7 @@ namespace DotNetNuke.Modules.Admin.Users
             }
             else
             {
-                if ((!IsAdmin))
+                if ((!IsAdminOrCanEditModule))
                 {
                     passwordTab.Visible = false;
                 }
@@ -460,7 +463,7 @@ namespace DotNetNuke.Modules.Admin.Users
             }
 
             dnnRoleDetails.Visible = IsEdit && !User.IsSuperUser && !AddUser;
-            dnnPasswordDetails.Visible = (IsAdmin) && !AddUser;
+            dnnPasswordDetails.Visible = IsAdminOrCanEditModule && !AddUser;
 
             if(EditProfileMode)
             {
@@ -654,7 +657,7 @@ namespace DotNetNuke.Modules.Admin.Users
         /// </remarks>
         private void MembershipAuthorized(object sender, EventArgs e)
         {
-            if (IsAdmin == false)
+            if (IsAdminOrCanEditModule == false)
             {
                 return;
             }
@@ -685,7 +688,7 @@ namespace DotNetNuke.Modules.Admin.Users
         /// </remarks>
         protected void MembershipPasswordUpdateChanged(object sender, EventArgs e)
         {
-            if (IsAdmin == false)
+            if (IsAdminOrCanEditModule == false)
             {
                 return;
             }
@@ -712,7 +715,7 @@ namespace DotNetNuke.Modules.Admin.Users
         /// -----------------------------------------------------------------------------
         private void MembershipPromoteToSuperuser(object sender, EventArgs e)
         {
-            if (IsAdmin == false)
+            if (IsAdminOrCanEditModule == false)
             {
                 return;
             }
@@ -737,7 +740,7 @@ namespace DotNetNuke.Modules.Admin.Users
         /// -----------------------------------------------------------------------------
         private void MembershipDemoteFromSuperuser(object sender, EventArgs e)
         {
-            if (IsAdmin == false)
+            if (IsAdminOrCanEditModule == false)
             {
                 return;
             }
@@ -831,7 +834,7 @@ namespace DotNetNuke.Modules.Admin.Users
         /// </remarks>
         private void PasswordUpdated(object sender, Password.PasswordUpdatedEventArgs e)
         {
-            if (IsAdmin == false)
+            if (IsAdminOrCanEditModule == false)
             {
                 return;
             }
@@ -875,7 +878,7 @@ namespace DotNetNuke.Modules.Admin.Users
         /// </remarks>
         private void ProfileUpdateCompleted(object sender, EventArgs e)
         {
-            if (IsAdmin == false)
+            if (IsAdminOrCanEditModule == false)
             {
                 return;
             }
