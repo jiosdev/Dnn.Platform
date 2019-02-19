@@ -287,6 +287,7 @@ namespace DotNetNuke.Services.Mail
                                 user, Scope.SystemMessages, ref propertyNotFound))
                         };
                     }
+
                     break;
                 case MessageType.PasswordReminder:
                     subject = "EMAIL_PASSWORD_REMINDER_SUBJECT";
@@ -313,17 +314,20 @@ namespace DotNetNuke.Services.Mail
                     body = "EMAIL_USER_UNAUTHORIZED_BODY";
                     break;
                 default:
-                    subject = "EMAIL_USER_UPDATED_OWN_PASSWORD_SUBJECT";
-                    body = "EMAIL_USER_UPDATED_OWN_PASSWORD_BODY";
+                    subject = string.Empty;
+                    body = string.Empty;
                     break;
             }
 
-            subject = Localize.GetSystemMessage(locale, settings, subject, user, Localize.GlobalResourceFile, custom, "", settings.AdministratorId);
-            body = Localize.GetSystemMessage(locale, settings, body, user, Localize.GlobalResourceFile, custom, "", settings.AdministratorId);
+            if (subject != string.Empty && body != string.Empty)
+            {
+                subject = Localize.GetSystemMessage(locale, settings, subject, user, Localize.GlobalResourceFile, custom, "", settings.AdministratorId);
+                body = Localize.GetSystemMessage(locale, settings, body, user, Localize.GlobalResourceFile, custom, "", settings.AdministratorId);
 
-            var fromUser = (UserController.GetUserByEmail(settings.PortalId, settings.Email)!=null)?
-                String.Format("{0} < {1} >", UserController.GetUserByEmail(settings.PortalId, settings.Email).DisplayName, settings.Email) : settings.Email;
-            SendEmail(fromUser, UserController.GetUserById(settings.PortalId, toUser).Email, subject, body);
+                var fromUser = (UserController.GetUserByEmail(settings.PortalId, settings.Email)!=null)?
+                    String.Format("{0} < {1} >", UserController.GetUserByEmail(settings.PortalId, settings.Email).DisplayName, settings.Email) : settings.Email;
+                SendEmail(fromUser, UserController.GetUserById(settings.PortalId, toUser).Email, subject, body);
+            }
 
             return Null.NullString;
         }
