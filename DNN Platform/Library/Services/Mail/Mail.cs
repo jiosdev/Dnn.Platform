@@ -135,6 +135,7 @@ namespace DotNetNuke.Services.Mail
                                 smtpClient.UseDefaultCredentials = true;
                                 break;
                         }
+                        mailMessage.Headers.Add("X-SMTPAPI", $"{{\"category\" : \"{subject}\"}}");
                         smtpClient.EnableSsl = smtpEnableSSL;
                         smtpClient.Send(mailMessage);
                         smtpClient.Dispose();
