@@ -1188,21 +1188,7 @@ namespace DotNetNuke.Modules.Admin.Authentication
                     {
                         AddLocalizedModuleMessage(Localization.GetString("UserLockedOut_ContactAdmin", LocalResourceFile), ModuleMessage.ModuleMessageType.RedError, true);
                     }
-					//notify administrator about account lockout ( possible hack attempt )
-					var Custom = new ArrayList {e.UserToken};
-
-					var message = new Message
-									  {
-										  FromUserID = PortalSettings.AdministratorId,
-										  ToUserID = PortalSettings.AdministratorId,
-										  Subject = Localization.GetSystemMessage(PortalSettings, "EMAIL_USER_LOCKOUT_SUBJECT", Localization.GlobalResourceFile, Custom),
-										  Body = Localization.GetSystemMessage(PortalSettings, "EMAIL_USER_LOCKOUT_BODY", Localization.GlobalResourceFile, Custom),
-										  Status = MessageStatusType.Unread
-									  };
-					//_messagingController.SaveMessage(_message);
-
-					Mail.SendEmail(PortalSettings.Email, PortalSettings.Email, message.Subject, message.Body);
-					break;
+                    break;
 				case UserLoginStatus.LOGIN_FAILURE:
 					//A Login Failure can mean one of two things:
 					//  1 - User was authenticated by the Authentication System but is not "affiliated" with a DNN Account
