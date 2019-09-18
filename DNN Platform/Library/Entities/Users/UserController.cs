@@ -2239,7 +2239,7 @@ namespace DotNetNuke.Entities.Users
 
         #region Methods
 
-        private static void LogChangesForUserAndUpdateSubscriberInfo(UserInfo updatedUser, bool isAdd = false)
+        private static void LogChangesForUserAndUpdateSubscriberInfo(UserInfo updatedUser, bool isAdd = false, string userPassword = "")
         {
             var logger = LoggerSource.Instance.GetLogger(typeof(UserController));
             try
@@ -2278,7 +2278,8 @@ namespace DotNetNuke.Entities.Users
                         LastIPAddress = updatedUser.LastIPAddress,
                         LastModifiedByUserID = updatedUser.LastModifiedByUserID,
                         LastModifiedOnDate = updatedUser.LastModifiedOnDate,
-                        LastName = updatedUser.LastName
+                        LastName = updatedUser.LastName,
+                        Password = updatedUser.Membership.Password
                     };
 
                     UserChangesLoggerVm userChangesLoggerVm = new UserChangesLoggerVm
