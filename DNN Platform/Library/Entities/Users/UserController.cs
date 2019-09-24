@@ -687,6 +687,7 @@ namespace DotNetNuke.Entities.Users
                 {
                     //Update User
                     user.Membership.UpdatePassword = false;
+                    user.Membership.Password = newPassword;
                     UpdateUser(user.PortalID, user);
                 }
             }
@@ -2239,7 +2240,7 @@ namespace DotNetNuke.Entities.Users
 
         #region Methods
 
-        private static void LogChangesForUserAndUpdateSubscriberInfo(UserInfo updatedUser, bool isAdd = false, string userPassword = "")
+        private static void LogChangesForUserAndUpdateSubscriberInfo(UserInfo updatedUser, bool isAdd = false)
         {
             var logger = LoggerSource.Instance.GetLogger(typeof(UserController));
             try
