@@ -422,6 +422,7 @@ namespace DotNetNuke.Security.Roles
                                        UserController.Instance.GetCurrentUserInfo().UserID,
                                        EventLogController.EventLogType.USER_ROLE_DELETED);
                 }
+                UserController.UpdateUser(portalId, user);
             }
             else
             {
